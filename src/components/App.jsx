@@ -4,7 +4,6 @@ import ContactForm from './ContactForm/ContactForm';
 import ContactList from './ContactList/ContactList';
 import Filter from './FilterItem/FilterItem';
 import styles from './App.module.css';
-import { saveContactsToLocalStorage, loadContactsFromLocalStorage } from './ContactLocalStorage/localStoraje';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   addContact,
@@ -13,6 +12,7 @@ import {
   toggleSearchByPhone,
   loadContacts,
 } from './redux/contactSlice.js';
+import { persistor } from './redux/store';
 
 const App = () => {
   const contacts = useSelector((state) => state.contacts.contacts);
@@ -21,13 +21,15 @@ const App = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    persistor.persist(); 
     const storedContacts = loadContactsFromLocalStorage();
     dispatch(loadContacts(storedContacts));
   }, [dispatch]);
-  useEffect(() => {
-    saveContactsToLocalStorage(contacts);
-  }, [contacts]);
 
+  const loadContactsFromLocalStorage = () => {
+    const storedContacts = localStorage.getItem('contacts');
+    return storedContacts ? JSON.parse(storedContacts) : [];
+  };
 
   const handleAddContact = (newContact) => {
     const existingName = contacts.find(
@@ -86,7 +88,7 @@ const App = () => {
           onToggleSearchByPhone={handleToggleSearchByPhone}
           searchByPhone={searchByPhone}
         />
-        <ContactList contacts={filteredContacts} onDeleteContact={handleDeleteContact} /> 
+        <ContactList contacts={filteredContacts} onDeleteContact={handleDeleteContact} />
       </div>
     </div>
   );
