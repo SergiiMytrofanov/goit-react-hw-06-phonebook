@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import { nanoid } from 'nanoid';
+import { useSelector } from 'react-redux'; 
 import styles from './ContactForm.module.css';
 
 const ContactForm = ({ addContact }) => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+
+
+  const contacts = useSelector((state) => state.contacts.contacts);
 
   const handleNameChange = (event) => {
     setName(event.target.value);
@@ -22,13 +26,22 @@ const ContactForm = ({ addContact }) => {
     const newContact = {
       id: nanoid(),
       name: name.trim(),
-      number: number.trim()
+      number: number.trim(),
     };
 
     addContact(newContact);
     setName('');
     setNumber('');
+
+
+    const updatedContacts = [...contacts, newContact];
+    saveContactsToLocalStorage(updatedContacts);
   };
+
+  const saveContactsToLocalStorage = (contacts) => {
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+  };
+
 
   return (
     <form className={styles.contactForm} onSubmit={handleSubmit}>

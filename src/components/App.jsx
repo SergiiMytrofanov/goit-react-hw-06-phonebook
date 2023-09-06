@@ -21,7 +21,7 @@ const App = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    persistor.persist(); 
+    persistor.persist();
     const storedContacts = loadContactsFromLocalStorage();
     dispatch(loadContacts(storedContacts));
   }, [dispatch]);
@@ -51,29 +51,31 @@ const App = () => {
     }
 
     dispatch(addContact({ ...newContact, id: nanoid() }));
+    saveContactsToLocalStorage([...contacts, { ...newContact, id: nanoid() }]);
   };
-
 
   const handleDeleteContact = (id) => {
     dispatch(deleteContact(id));
+    saveContactsToLocalStorage(contacts.filter((contact) => contact.id !== id));
   };
-
 
   const handleFilterChange = (event) => {
     dispatch(setFilter(event.target.value));
   };
 
-
   const handleToggleSearchByPhone = () => {
     dispatch(toggleSearchByPhone());
   };
-
 
   const filteredContacts = contacts.filter((contact) =>
     searchByPhone
       ? contact.number.includes(filter)
       : contact.name.toLowerCase().includes(filter.toLowerCase())
   );
+
+  const saveContactsToLocalStorage = (contacts) => {
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+  };
 
   return (
     <div className={styles.adressBookContainer}>

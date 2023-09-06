@@ -22,7 +22,8 @@ const contactSlice = createSlice({
       state.filter = '';
     },
     loadContacts: (state, action) => {
-      state.contacts = action.payload;
+      // Завантаження даних з локального сховища
+      state.contacts = action.payload || [];
     },
   },
 });

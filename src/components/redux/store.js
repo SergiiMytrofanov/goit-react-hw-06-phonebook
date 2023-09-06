@@ -1,7 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
-import contactReducer from './contactSlice';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+
+import contactReducer from './contactSlice';
 
 const persistConfig = {
   key: 'root',
@@ -16,6 +17,6 @@ const store = configureStore({
   },
 });
 
-export const persistor = persistStore(store);
+const persistor = persistStore(store);
 
-export default store;
+export { store, persistor };
